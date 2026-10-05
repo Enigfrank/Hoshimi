@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AGL · GM 管理</title>
+  <link rel="stylesheet" href="/gm/style.css">
+  <script defer src="/gm/app.js"></script>
+</head>
+<body>
+<main>
+  <header><div><p class="eyebrow">AGL SERVER</p><h1>GM 管理</h1><p>查询账号、发放物品，管理邮件与公告。</p></div><button id="refresh" class="secondary" type="button">刷新数据</button></header>
+  <div id="status" role="status" aria-live="polite">正在加载数据…</div>
+  <section class="account-bar"><label>当前账号<select id="account"></select></label><p id="summary"></p></section>
+  <nav aria-label="管理功能">
+    <button type="button" data-tab="overview" aria-pressed="true">账号数据</button>
+    <button type="button" data-tab="commands" aria-pressed="false">GM 指令</button>
+    <button type="button" data-tab="items" aria-pressed="false">物品查阅</button>
+    <button type="button" data-tab="mail" aria-pressed="false">邮件</button>
+    <button type="button" data-tab="notices" aria-pressed="false">公告</button>
+    <button type="button" data-tab="audit" aria-pressed="false">操作记录</button>
+  </nav>
+  <section id="overview" class="panel">
+    <h2>账号数据</h2><p>余额、库存、角色、编队、任务和关卡记录均读取当前存档。</p>
+    <label>数据类别<select id="data-field"><option value="currencies">全部货币</option><option value="materials">材料库存</option><option value="heroes">角色及皮肤</option><option value="servants">钥从库存</option><option value="teams">编队与方案</option><option value="battle_progress">关卡进度</option><option value="tasks">任务进度</option><option value="decorations">头像、装饰与场景</option><option value="sign">签到记录</option><option value="chapter_v2">剧情事件地图</option></select></label>
+    <pre id="account-data"></pre>
+    <button id="unlock" type="button" class="secondary">补齐 Developer 解锁</button>
+  </section>
+  <section id="commands" class="panel" hidden>
+    <h2>GM 指令</h2><p>设置类指令直接设为目标值；give 指令增加库存。成功后立即保存并同步在线客户端。</p>
+    <form id="command-form"><label>指令<input name="command" placeholder="/give 1 100" required maxlength="200"></label><button type="submit">执行指令</button></form>
+    <table><thead><tr><th>指令</th><th>用途</th></tr></thead><tbody>
+      <tr><td>/give 物品ID 数量</td><td>发放有效物品</td></tr><tr><td>/flower 数量</td><td>设置移转之花合计</td></tr><tr><td>/diamond 数量</td><td>设置移转之辉</td></tr><tr><td>/gold 数量</td><td>设置金币</td></tr><tr><td>/stamina 数量</td><td>设置体力</td></tr><tr><td>/level 1–100</td><td>设置等级</td></tr><tr><td>/help</td><td>查看指令说明</td></tr>
+    </tbody></table>
+  </section>
+  <section id="items" class="panel" hidden>
+    <div class="section-title"><h2>物品查阅</h2><a href="/gm/api/items.csv" download="ITEM_IDS.csv">下载完整 CSV</a></div>
+    <form id="search-form"><label>编号、名称或类型<input id="item-search" placeholder="如：移转之花、头像、31"></label><button type="submit">查询</button></form>
+    <p id="item-total"></p><div class="table-wrap"><table><thead><tr><th>ID</th><th>名称</th><th>类型</th><th>说明</th></tr></thead><tbody id="item-rows"></tbody></table></div>
+    <div class="pagination"><button id="prev" class="secondary" type="button">上一页</button><span id="page"></span><button id="next" class="secondary" type="button">下一页</button></div>
+  </section>
+  <section id="mail" class="panel" hidden>
+    <h2>发送邮件</h2><form id="mail-form">
+      <label>收件范围<select name="scope"><option value="current">当前账号</option><option value="all">全部现有账号</option></select></label>
+      <label>标题<input name="title" required maxlength="100"></label>
+      <label>正文<textarea name="content" required maxlength="20000" rows="5"></textarea></label>
+      <div class="form-grid"><label>发件人<input name="sender" value="GM系统" required maxlength="100"></label><label>有效期（天）<input name="days" type="number" min="1" max="3650" value="30" required></label></div>
+      <label>附件（每行填写：物品ID 数量，可留空）<textarea name="rewards" rows="3" placeholder="1 100&#10;2 5000"></textarea></label><button type="submit">发送邮件</button>
+    </form><h3>当前账号邮件</h3><pre id="mail-data"></pre>
+  </section>
+  <section id="notices" class="panel" hidden>
+    <h2>公告管理</h2><form id="notice-form">
+      <input name="id" type="hidden" value="0">
+      <div class="form-grid"><label>类型<select name="type"><option value="101">公告</option><option value="102">活动</option><option value="104">系统通知</option></select></label><label>标题<input name="title" required maxlength="100"></label></div>
+      <label>正文<textarea name="content" required maxlength="20000" rows="5"></textarea></label>
+      <div class="form-grid"><label>开始时间<input name="start" type="datetime-local" required></label><label>结束时间<input name="end" type="datetime-local" required></label></div>
+      <div class="actions"><button type="submit">保存公告</button><button id="new-notice" type="button" class="secondary">新建公告</button></div>
+    </form><h3>公告列表</h3><div id="notice-list"></div>
+  </section>
+  <section id="audit" class="panel" hidden><h2>操作记录</h2><div class="table-wrap"><table><thead><tr><th>时间</th><th>操作</th><th>UID</th><th>内容</th></tr></thead><tbody id="audit-rows"></tbody></table></div></section>
+</main>
+</body>
+</html>

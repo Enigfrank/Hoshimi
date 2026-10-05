@@ -1,0 +1,41 @@
+# 账号、密码摘要、令牌、日志、客户端设置备份
+/data/
+/config_local.py
+*.log
+# 本机环境和缓存
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
+.codegraph/
+.claude/
+# 客户端源码、资源、协议和配置导出物不得发布
+extracted_lua/
+runtime/
+dumps/
+DummyDll/
+*.lua
+*.bytes
+*.ys
+*.dll
+*.exe
+*.assets
+*.bundle
+*.proto
+protocol_map.json
+tables.json
+runtime.json
+*descriptors*.json
+*opcode_map*.json
+*.csv
+# 私钥、证书与本机备份
+*.pem
+*.pfx
+*.p12
+*.key
+*.cer
+*.bak
+*.zip
+*.7z
