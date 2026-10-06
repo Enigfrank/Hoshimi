@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import tempfile
+import time
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -99,6 +100,51 @@ def protocol_map(descriptors: list[dict]) -> dict:
     return result
 
 
+def rename_runtime_directory(source: Path, target: Path) -> None:
+    """等待 Windows 的短暂目录占用解除，持续拒绝访问时报告保留路径。"""
+    delays = (0.2, 0.5, 1, 2, 4)
+    for attempt in range(len(delays) + 1):
+        try:
+            source.rename(target)
+            return
+        except PermissionError as error:
+            if target.exists():
+                raise FileExistsError(f'目标目录已存在：{target}。请勿同时运行多份准备工具。') from error
+            if getattr(error, 'winerror', None) not in (5, 32, 33):
+                raise
+            if attempt == len(delays):
+                raise PermissionError(
+                    f'Windows 持续拒绝目录改名：{source} -> {target}。'
+                    '请先停止使用这些文件的服务端，关闭打开该目录的程序后重试；'
+                    '若仍失败，请检查目录权限，或用 --runtime-dir 指定另一个仓库外目录。'
+                ) from error
+            print(f'目录暂时无法改名，{delays[attempt]} 秒后重试（{attempt + 1}/{len(delays)}）。')
+            time.sleep(delays[attempt])
+
+
+def install_runtime(staging: Path, runtime: Path) -> None:
+    """发布完整准备结果；发布失败时恢复旧依赖并保留准备目录。"""
+    backup = None
+    if runtime.exists():
+        backup = runtime.with_name(runtime.name + '-backup-' + datetime.now().strftime('%Y%m%d-%H%M%S-%f'))
+        rename_runtime_directory(runtime, backup)
+    try:
+        rename_runtime_directory(staging, runtime)
+    except OSError as error:
+        if backup is not None:
+            try:
+                rename_runtime_directory(backup, runtime)
+            except OSError as restore_error:
+                raise RuntimeError(
+                    f'发布失败，旧依赖恢复也被阻止。旧依赖仍在：{backup}；'
+                    f'本次完整准备结果仍在：{staging}。恢复失败原因：{restore_error}'
+                ) from error
+            print(f'发布未成功，已恢复旧依赖：{runtime}')
+        raise
+    if backup is not None:
+        print(f'旧依赖已备份到：{backup}')
+
+
 def prepare(client: Path, runtime: Path) -> None:
     """在仓库外准备完整依赖，成功后才替换旧运行目录并保留备份。"""
     runtime = external_path(runtime)
@@ -129,11 +175,7 @@ def prepare(client: Path, runtime: Path) -> None:
     metadata = {'schema_version': 1, 'client_dir': str(client), 'app_version': manifest['appVersion'],
                 'build_code': manifest['buildCode'], 'manifest_sha256': hashlib.sha256(manifest_raw).hexdigest()}
     (staging / 'runtime.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding='utf-8')
-    if runtime.exists():
-        backup = runtime.with_name(runtime.name + '-backup-' + datetime.now().strftime('%Y%m%d-%H%M%S-%f'))
-        runtime.rename(backup)
-        print(f'旧依赖已备份到：{backup}')
-    staging.rename(runtime)
+    install_runtime(staging, runtime)
     print(f'准备完成：{runtime}')
     print(f'角色 {len(tables["HERO_DEFINITIONS"])}、货币 {len(tables["CURRENCY_DEFINITIONS"])}、补给 {len(tables["SUPPLY_DEFINITIONS"])}、协议索引 {len(protocols)}。')
 
