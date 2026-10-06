@@ -19,36 +19,14 @@ Hoshimi（星见）是用 Go 编写的非官方游戏模拟服务端，适合本
 
 在本项目的 GitHub 页面：
 
- 下载 **`Hoshimi-windows-amd64.zip`**。
+1. 找到 **`Hoshimi-windows-amd64.zip`**
+2. 点击下载。若进入了文件预览页，点击 **Download raw file（下载原始文件）**。
+3. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
 
+**成功标志：** 解压后的文件夹中有 `hoshimi.exe` 和 `scripts` 文件夹。
 
-请先解压，再使用。下文用 `E:\Hoshimi` 举例，你可以换成自己的文件夹。
+后面的命令都在包含 `hoshimi.exe` 的文件夹中执行。下文用 `E:\Hoshimi` 举例，你可以换成自己的路径。
 
-<details>
-<summary>GitHub 还没有发布压缩包？点击这里自己构建</summary>
-
-1. 回到 GitHub 页面顶部，点击绿色 **Code** → **Download ZIP**。
-2. 解压，打开包含 `go.mod` 的文件夹。
-3. 安装 [Go 1.25 或更新版本的 Windows 64 位版](https://go.dev/dl/) 和 [PowerShell 7](https://github.com/PowerShell/PowerShell/releases)。
-4. 在此文件夹打开 PowerShell 7，执行：
-
-```powershell
-pwsh -File .\scripts\build.ps1
-```
-
-如果 Go 没有加入 PATH，填写它的位置。例如 Go 安装在 `F:\Go`：
-
-```powershell
-pwsh -File .\scripts\build.ps1 -GoPath 'F:\Go\bin\go.exe'
-```
-
-**成功标志：** 出现“构建完成”和“分发压缩包”。
-
-打开 `dist` 文件夹，解压里面的 `Hoshimi-windows-amd64.zip`，然后从下面第 2 步继续。
-
-构建工具仅用于生成 EXE。运行 EXE 时不需要安装 Go。
-
-</details>
 
 ### 2. 准备好客户端和 PowerShell 7
 
@@ -270,8 +248,7 @@ TCP 检查成功不能证明 UDP 可用。进大厅后战斗卡住时，重点�
 
 | 提示或现象 | 下一步 |
 |---|---|
-| 找不到 `hoshimi.exe` | 先解压发布版；下载的是 Code ZIP 时，用第 1 步里的构建教程 |
-| 找不到 `go` | 运行 EXE 不需要 Go；构建时安装 Go 或给构建脚本传 `-GoPath` |
+| 找不到 `hoshimi.exe` | 回到第 1 步下载并解压 `Hoshimi-windows-amd64.zip`，再打开包含 EXE 的文件夹 |
 | 缺少运行元数据、配置或协议表 | 回到第 3 步执行 `prepare` |
 | 运行文件与客户端版本不一致 | 停服，更新客户端，然后重新准备 |
 | 缺少 `scripts64`、`tolua.dll` 或资源散列错误 | 检查游戏路径，用官方启动器补下载或修复资源 |
@@ -331,7 +308,7 @@ pwsh -File .\scripts\repair-battle-controls.ps1
 <details>
 <summary>修改端口或文件位置</summary>
 
-准备成功后，编辑 EXE 旁边的 `config.json`。格式参考 [config.example.json](config.example.json)。修改后重启服务端。
+准备成功后，编辑 EXE 旁边的 `config.json`。格式参考同一文件夹中的 `config.example.json`。修改后重启服务端。
 
 | 字段 | 默认值 / 用途 |
 |---|---|
@@ -352,40 +329,8 @@ pwsh -File .\scripts\repair-battle-controls.ps1
 
 </details>
 
-<details>
-<summary>开发验证与发布</summary>
+## 发布内容与许可
 
-只运行普通检查：
-
-```powershell
-go test ./...
-go vet ./...
-```
-
-有完整客户端和已准备的运行文件时，运行协议集成测试：
-
-```powershell
-$env:HOSHIMI_TEST_CLIENT = 'D:\Games\AetherGazer'
-$env:HOSHIMI_TEST_RUNTIME = 'E:\Hoshimi\runtime'
-go test ./internal/server -v -count=1 -timeout 5m
-```
-
-测试使用临时账号目录和临时端口，不修改正式存档。覆盖登录、自选及保底、辉芒、皮肤奖池、编队、GM、商店、邮件、战斗结算与 UDP 重传。
-
-构建分发包：
-
-```powershell
-pwsh -File .\scripts\build.ps1
-```
-
-脚本按固定清单打包 EXE、README、许可、配置示例和接入脚本，不包含本机 `runtime` 或 `data`。
-
-提交前检查 `git status --short` 和 `git diff --cached --stat`。不要用 `git add -f` 加入被忽略的客户端文件。
-
-</details>
-
-## 代码与许可
-
-仓库包含自写 Go 服务端
+本项目只发布编译好的服务端及配套接入脚本，不公开服务端源码。发布包不包含客户端脚本、资源或存档；运行所需文件由你在本机从客户端准备。
 
 许可见 [LICENSE](LICENSE)，依赖许可见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。游戏、客户端、资源和商标属于各自权利人，本项目与官方无关联。
