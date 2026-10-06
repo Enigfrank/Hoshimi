@@ -1,6 +1,6 @@
-# Hoshimi Server
+# Hoshimi
 
-Hoshimi（星见）是用 Go 编写的非官方游戏模拟服务端，适合本地体验和熟人测试。
+Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人测试。
 
 第一次使用，按下面 **1 → 2 → 3 → 4 → 5** 做。每次只做一步。
 
@@ -19,9 +19,8 @@ Hoshimi（星见）是用 Go 编写的非官方游戏模拟服务端，适合本
 
 在本项目的 GitHub 页面：
 
-1. 找到 **`Hoshimi-windows-amd64.zip`**
-2. 点击下载。若进入了文件预览页，点击 **Download raw file（下载原始文件）**。
-3. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
+1. 找到 **`Hoshimi-windows-amd64.zip`** 并下载
+2. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
 
 **成功标志：** 解压后的文件夹中有 `hoshimi.exe` 和 `scripts` 文件夹。
 
