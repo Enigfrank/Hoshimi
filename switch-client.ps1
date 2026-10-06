@@ -15,7 +15,7 @@ param(
     [ValidateRange(1, 65535)]
     [int]$LocalPort = 8080,
     [string]$OfficialConfigPath,
-    [string]$StateDir = ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../data/client-switch'))),
+    [string]$StateDir = ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot './data/client-switch'))),
     [string]$HostsPath = (Join-Path $env:SystemRoot 'System32/drivers/etc/hosts'),
     [string]$PrefsDir = (Join-Path $env:USERPROFILE 'AppData/LocalLow/yongshi/AetherGazer')
 )
