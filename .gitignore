@@ -12,8 +12,14 @@ venv/
 .codegraph/
 .claude/
 p-source/
+g-source/
+
 # 客户端源码、资源、协议和配置导出物不得发布
-p-source/
+/dist/
+/config.json
+runtime-prepare-*/
+runtime-backup-*/
+*.test
 extracted_lua/
 runtime/
 dumps/
