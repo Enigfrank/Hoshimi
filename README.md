@@ -19,7 +19,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 
 在本项目的 GitHub 页面：
 
-1. 找到 **`Hoshimi-windows-amd64.zip`** 并下载
+1. 在release页面找到 **`Hoshimi-windows-amd64.zip`** 并下载
 2. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
 
 **成功标志：** 解压后的文件夹中有 `hoshimi.exe` 和 `scripts` 文件夹。
