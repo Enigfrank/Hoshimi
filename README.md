@@ -19,7 +19,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 
 在本项目的 GitHub 页面：
 
-1. 在release页面找到 **`Hoshimi-windows-amd64.zip`** 并下载
+1. 在dist文件夹中找到 **`Hoshimi-windows-amd64.zip`** 并下载
 2. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
 
 **成功标志：** 解压后的文件夹中有 `hoshimi.exe` 和 `scripts` 文件夹。
@@ -72,6 +72,8 @@ Set-Location 'E:\Hoshimi'
 .\hoshimi.exe
 ```
 
+每次启动会先显示服务端版本和编译时间。首次启动会显示免费软件提示和交流频道。**按回车继续**，以后启动无需再次确认。
+
 **成功标志：** 出现“`Hoshimi 服务已启动`”。
 
 **保持这个窗口开着。** 关闭窗口会停止服务端。
@@ -98,7 +100,7 @@ pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGa
 
 **账号不存在会自动注册。已有账号需要密码正确。** 请为私服单独设置密码。
 
-普通新号从一级朝约开始，初始体力为 100，货币和材料为零。跳过操作引导，剧情入口全部解锁，默认零星。
+普通新号直接使用客户端最大等级，初始体力为 100，货币和材料为零。跳过操作引导，剧情入口全部解锁，默认零星。
 
 想体验满配，用 `Developer` 账号。第一次登录时输入的密码会成为这个账号的密码。
 
@@ -118,6 +120,12 @@ Set-Location 'E:\Hoshimi'
 **停止服务：** 在服务端窗口按 `Ctrl+C`。
 
 客户端路径会保存在 `config.json` 中，下次无需再填写。
+
+仅查看服务端版本和编译时间：
+
+```powershell
+.\hoshimi.exe version
+```
 
 ## 切回官服
 
