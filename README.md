@@ -13,6 +13,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 | 连朋友的服 | [连接朋友的服务器](#连接朋友的服务器) |
 | 处理报错 | [常见问题](#常见问题) |
 | 上报问题 | [问题上报指南](REPORTING.md) |
+| 查看更新 | [更新日志](CHANGELOG.md) |
 
 ## 首次使用
 
@@ -20,7 +21,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 
 在本项目的 GitHub 页面：
 
-1. 在dist文件夹中找到 **`Hoshimi-windows-amd64.zip`** 并下载
+1. 打开本项目的 **GitHub Releases**，下载所需版本的 **`Hoshimi-windows-amd64-v[版本号].zip`**，例如 `Hoshimi-windows-amd64-v0.0.1.zip`。
 2. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
 
 **成功标志：** 解压后的文件夹中有 `hoshimi.exe` 和 `scripts` 文件夹。
@@ -256,7 +257,7 @@ TCP 检查成功不能证明 UDP 可用。进大厅后战斗卡住时，重点�
 
 | 提示或现象 | 下一步 |
 |---|---|
-| 找不到 `hoshimi.exe` | 回到第 1 步下载并解压 `Hoshimi-windows-amd64.zip`，再打开包含 EXE 的文件夹 |
+| 找不到 `hoshimi.exe` | 回到第 1 步下载并解压 `Hoshimi-windows-amd64-v[版本号].zip`，再打开包含 EXE 的文件夹 |
 | 缺少运行元数据、配置或协议表 | 回到第 3 步执行 `prepare` |
 | 运行文件与客户端版本不一致 | 停服，更新客户端，然后重新准备 |
 | 缺少 `scripts64`、`tolua.dll` 或资源散列错误 | 检查游戏路径，用官方启动器补下载或修复资源 |
@@ -338,6 +339,10 @@ pwsh -File .\scripts\repair-battle-controls.ps1
 `--home '其他文件夹'` 可指定配置与存档目录；`--runtime-dir '完整路径'` 可临时指定运行文件位置。默认无需这些参数。
 
 </details>
+
+## 更新日志
+
+已实现的修改和验证范围见 [更新日志](CHANGELOG.md)。
 
 ## 发布内容与许可
 
