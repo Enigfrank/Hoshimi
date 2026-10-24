@@ -288,10 +288,11 @@ TCP 检查成功不能证明 UDP 可用。进大厅后战斗卡住时，重点�
 | `data/client-switch/` | 官私服切换备份及登录缓存 |
 | `runtime/` | 本机准备的客户端运行文件 |
 | `config.json` | 客户端路径与服务设置 |
+| `logs/` | 服务端运行日志，每次启动在 `logs` 文件夹内新建一个 `2026-10-23T20-14-05.log`，可随时删除 |
 
 已有 JSON 存档可在停服后放到 EXE 旁边的 `data/` 中，令牌和密码格式保持兼容。
 
-`data/`、`runtime/` 和 `config.json` 不要上传 Git，也不要放进分发压缩包。
+`data/`、`runtime/`、`logs/` 和 `config.json` 不要上传 Git，也不要放进分发压缩包。
 
 ## 常见问题
 
@@ -357,6 +358,24 @@ pwsh -File .\scripts\repair-battle-controls.ps1
 - 官方 CDN 上已下架的资源可能无法下载。
 
 ## 进阶设置
+
+### 誓约照片（仅同机）
+
+客户端照片 SDK 固定使用 HTTPS。需要保存婚纱照时，在新版服务端目录手动执行：
+
+```powershell
+pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Enable
+```
+
+脚本生成仅用于 `127.0.0.1` 的证书，将其信任到当前 Windows 用户的根证书库，并备份原配置、启用 `enable_https`。不会启动或重启服务。请自行启动新版服务、重新登录后测试拍照。游戏与服务端须在同一台电脑、同一 Windows 用户下运行；远程玩家不适用此配置。
+
+已有 `cert.pem`、`key.pem` 或启用记录时脚本拒绝覆盖。HTTPS 端口需空闲（默认 `443`）；环境变量仍优先于配置。未启用 HTTPS 时上传配置会明确返回失败，不再下发缺少凭据的假成功响应。
+
+照片保存在 `data/photos`，应与账号存档一起备份。证书有效期一年；过期后先恢复再重新启用。恢复命令如下，仅在配置和证书未被后续修改时逐字节还原，并删除该脚本添加的证书信任：
+
+```powershell
+pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Disable
+```
 
 <details>
 <summary>修改端口或文件位置</summary>
