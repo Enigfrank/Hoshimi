@@ -92,10 +92,15 @@ body .sidebar {
   border-right: var(--border-width) solid var(--color-neutral-200);
 }
 .app-name {
-  margin: var(--space-0) var(--space-2) var(--space-6);
+  margin: var(--space-0) var(--space-2) var(--space-2);
   font-size: var(--text-xl);
   font-weight: var(--weight-heading);
   line-height: var(--leading-heading);
+}
+.docs-updated {
+  margin: var(--space-0) var(--space-2) var(--space-6);
+  color: var(--color-neutral-500);
+  font-size: var(--text-xs);
 }
 .sidebar-nav { font-size: var(--text-sm); }
 .sidebar-nav ul { margin: var(--space-2) var(--space-0); padding-left: var(--space-3); list-style: none; }

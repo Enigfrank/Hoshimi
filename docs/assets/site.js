@@ -47,9 +47,24 @@ function installCodeCopy(hook) {
   });
 }
 
+/* 在侧栏标题下显示文档维护日期，仅在站点挂载时创建一次。 */
+function installDocsUpdatedAt(hook, vm) {
+  hook.mounted(function renderDocsUpdatedAt() {
+    const updated = document.createElement('p');
+    updated.className = 'docs-updated';
+    const time = document.createElement('time');
+    time.dateTime = vm.config.docsUpdatedAt;
+    time.textContent = vm.config.docsUpdatedAt;
+    updated.append('文档更新于 ', time);
+    document.querySelector('.app-name').after(updated);
+  });
+}
+
 window.$docsify = {
   name: 'Hoshimi 文档',
   nameLink: '#/',
+  // 修改文档内容时同步更新，格式为 YYYY-MM-DD。
+  docsUpdatedAt: '2026-10-31',
   homepage: 'README.md',
   loadSidebar: true,
   loadNavbar: true,
@@ -77,5 +92,5 @@ window.$docsify = {
     maxAge: 86400000,
     namespace: 'hoshimi-docs-v1'
   },
-  plugins: [installCodeCopy]
+  plugins: [installCodeCopy, installDocsUpdatedAt]
 };
