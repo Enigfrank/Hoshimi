@@ -1,0 +1,20 @@
+- **开始使用**
+  - [文档首页](/)
+  - [首次使用](quickstart.md)
+  - [以后怎么启动](startup.md)
+  - [功能与限制](features.md)
+- **日常维护**
+  - [更新指南](update.md)
+  - [保存进度与备份](backup.md)
+  - [切回官服](switch-official.md)
+- **更多用法**
+  - [官服存档导入（实验功能）](official-import.md)
+  - [GM 指令](gm.md)
+  - [连接朋友的服务器](remote.md)
+  - [进阶设置](advanced.md)
+- **排查与反馈**
+  - [常见问题](troubleshooting.md)
+  - [问题上报指南](reporting.md)
+- **项目信息**
+  - [发布内容与许可](about.md)
+  - [文档部署与维护](deployment.md)

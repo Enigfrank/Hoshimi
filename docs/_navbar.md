@@ -1,0 +1,3 @@
+- [下载服务端](https://github.com/Enigfrank/Hoshimi/releases)
+- [GitHub](https://github.com/Enigfrank/Hoshimi)
+- [反馈问题](https://github.com/Enigfrank/Hoshimi/issues)
