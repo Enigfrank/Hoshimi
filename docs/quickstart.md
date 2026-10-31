@@ -18,7 +18,7 @@
 
 需要这两样：
 
-- Windows 64 位 PC 游戏客户端。用官方启动器下载完整资源。
+- Windows 64 位 PC 游戏客户端。先用官方启动器完成基础安装，无需先登录官服或取得陪伴服权限；游戏内缺失资源可在下一步补齐。
 - [PowerShell 7](https://github.com/PowerShell/PowerShell/releases)。
 
 找到游戏文件夹，里面应有 <strong><code>AetherGazer.exe</code></strong>。记下这个文件夹的完整路径。
@@ -37,13 +37,17 @@ $PSVersionTable.PSVersion
 
 ```powershell
 Set-Location 'E:\Hoshimi'
-.\hoshimi.exe prepare --client-dir 'D:\Games\AetherGazer'
+.\hoshimi.exe prepare --download-missing --client-dir 'D:\Games\AetherGazer'
 ```
 
 - 第一行：包含 `hoshimi.exe` 的文件夹。
 - 第二行：包含 `AetherGazer.exe` 的游戏文件夹。
 
-等待完成。
+保持联网，等待完成。此命令查询官方公开资源清单，下载必要脚本、寻址表和语音清单，并核对资源大小与 MD5；不会首次下载全部模型和音视频。不读取官服登录缓存，也无需官服账号。中断后可重新执行同一命令续传。
+
+基础安装必须包含 `AetherGazer.exe`、`AetherGazer_Data/Plugins/x86_64/tolua.dll` 和 `AetherGazer_Data/StreamingAssets/Windows/AssetHash_Info.bytes`。缺少这些文件时先用启动器修复。资源应用版本与官方清单不匹配时会停止，不自动混用版本。
+
+已有完整资源、只需离线重新准备时，可去掉 `--download-missing`，继续使用原来的 `prepare --client-dir 'D:\Games\AetherGazer'`。
 
 **成功标志：** 出现“准备完成”，EXE 旁边生成 `runtime` 文件夹和 `config.json`。
 
@@ -74,7 +78,7 @@ Set-Location 'E:\Hoshimi'
 pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGazer'
 ```
 
-路径与第 3 步相同。首次切换需要可正常连接官服的客户端，脚本会保存恢复备份。
+路径与第 3 步相同。首次切换需要保留原始官服入口和 SDK 文件，脚本会保存恢复备份；无需登录官服。
 
 **成功标志：** 出现“已切换：本地服”。
 
@@ -91,4 +95,4 @@ pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGa
 
 想体验满配，用 `Developer` 账号。第一次登录时输入的密码会成为这个账号的密码。
 
-登录由私服验证，缺少的游戏资源默认由本地服务转发官方 HTTPS CDN 下载
+登录由私服验证。默认 `proxy` 模式下，清单中缺失或损坏的游戏资源由服务端从官方 HTTPS CDN 下载，大小和 MD5 校验通过后缓存并提供给客户端。首次进入尚未缓存的场景可能需要等待下载。

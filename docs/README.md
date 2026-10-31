@@ -23,7 +23,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 ## 下载与环境
 
 - [下载服务端](https://github.com/Enigfrank/Hoshimi/releases)：选择 `Hoshimi-windows-amd64-v[版本号].zip`，不要下载源码压缩包。
-- 运行环境：Windows 64 位、完整的 PC 游戏客户端与 PowerShell 7。
+- 运行环境：Windows 64 位、完成基础安装的 PC 游戏客户端与 PowerShell 7；游戏内缺失资源可按[首次使用](quickstart.md)说明补齐，无需先登录官服。
 - 首次切换前退出游戏；请为本地账号单独设置密码。
 - 已验证的客户端版本及玩法范围见[功能与限制](features.md)。
 
