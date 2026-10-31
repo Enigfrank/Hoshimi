@@ -1,4 +1,4 @@
-/* 为每个代码块提供纯文本复制，并处理剪贴板权限与本地 HTTP 预览。 */
+/* 为代码块添加语言工具栏与纯文本复制，保留原始高亮和命令内容。 */
 function installCodeCopy(hook) {
   hook.doneEach(function enhancePage() {
     const menu = document.querySelector('.sidebar-toggle');
@@ -6,7 +6,17 @@ function installCodeCopy(hook) {
 
     document.querySelectorAll('.markdown-section pre').forEach(function addCopyButton(pre) {
       const code = pre.querySelector('code');
-      if (!code || pre.querySelector('.code-copy')) return;
+      if (!code || pre.closest('.code-block')) return;
+
+      const language = pre.dataset.lang || code.className.match(/(?:lang|language)-([\w-]+)/)?.[1] || 'text';
+      const labels = { powershell: 'PowerShell', markdown: 'Markdown', json: 'JSON', text: '纯文本' };
+      const block = document.createElement('div');
+      block.className = 'code-block';
+      const toolbar = document.createElement('div');
+      toolbar.className = 'code-toolbar';
+      const label = document.createElement('span');
+      label.className = 'code-language';
+      label.textContent = labels[language] || language;
 
       const button = document.createElement('button');
       button.type = 'button';
@@ -30,7 +40,9 @@ function installCodeCopy(hook) {
           button.textContent = '复制';
         }, 2000);
       });
-      pre.appendChild(button);
+      toolbar.append(label, button);
+      pre.before(block);
+      block.append(toolbar, pre);
     });
   });
 }
