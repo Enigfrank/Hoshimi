@@ -64,7 +64,7 @@ window.$docsify = {
   name: 'Hoshimi 文档',
   nameLink: '#/',
   // 修改文档内容时同步更新，格式为 YYYY-MM-DD。
-  docsUpdatedAt: '2026-10-31',
+  docsUpdatedAt: '2026-11-07',
   homepage: 'README.md',
   loadSidebar: true,
   loadNavbar: true,
