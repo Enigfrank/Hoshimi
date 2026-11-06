@@ -36,6 +36,34 @@ pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Enable
 pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Disable
 ```
 
+## 可选使用统计
+
+仅 Go 编译版提供此功能。首次开服会说明收集范围、接收平台并询问同意；输入 `y` 开启，回车、其他输入或没有输入均保持关闭。结果保存在 `config.json` 的 `telemetry_enabled` 字段，旧配置缺少该字段时会询问一次。无法保存选择时，本次不开启统计。
+
+| 字段 | 内容 |
+|---|---|
+| 服务端版本 | 构建时注入的版本；直接构建时为 `dev` |
+| 系统版本 | Windows NT 主次版本，不含系统构建号、设备型号或硬件信息 |
+| 运行时长 | 本次进程各报告区间的秒数 |
+| 错误计数 | 开服失败、游戏 TCP、战斗 UDP、HTTP、延迟推送、公告及玩法周期同步的固定类别计数 |
+| 临时标识 | 每次启动重新生成，仅关联本次运行的统计事件，不保存到磁盘 |
+
+不上传游戏账号、UID、密码、登录令牌、存档、聊天、照片、完整日志、本机路径或设备标识。不创建 PostHog 人物档案，并在事件中请求禁用 IP 定位、将 IP 属性固定为占位值；第三方接收服务在网络连接层仍可接触来源 IP。数据发送到 PostHog 美国区域（`us.i.posthog.com`）。
+
+持久关闭：停止服务，将现有 `config.json` 中的 `telemetry_enabled` 改为 `false`，再重新启动；不要用一行示例覆盖整个配置。手动设为 `true` 表示同意并重新开启。
+
+仅本次关闭：
+
+```powershell
+.\hoshimi.exe --no-telemetry
+```
+
+有子命令时写为 `.\hoshimi.exe serve --no-telemetry`。该参数优先于保存的同意，不修改原选择；`--no-log` 只控制本机日志，与使用统计开关独立。`version`、`prepare` 和 `import-official` 不发送统计。
+
+每次开服尝试发送 `hoshimi_started`；运行中每 30 分钟发送 `hoshimi_heartbeat`；正常退出或开服返回错误时尝试发送 `hoshimi_stopped`。`runtime_seconds` 是相邻报告之间的增量，累计运行时长时对后两个事件求和，不能将它当成进程累计时长。启动事件代表开服尝试，不代表一定成功进入游戏；失败可结合 `error_counts.serve_failed` 查看。
+
+上报在后台完成，单次请求最多两秒，正常停服时最多等待两秒。发送失败直接丢弃，不重试、不在磁盘缓存，不影响开服或游戏；强制结束进程可能丢失最后一个报告区间。因此这些数据是使用统计估计，不作为准确在线人数或独立安装人数。
+
 ## 修改端口或文件位置
 
 准备成功后，编辑 EXE 旁边的 `config.json`。格式参考同一文件夹中的 `config.example.json`。修改后重启服务端。
