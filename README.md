@@ -8,7 +8,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 - **更新前：** 退出游戏、停止服务端并备份 `data/`、`config.json` 与 `runtime/`。
 - **问题反馈：** 先阅读[问题上报指南](REPORTING.md)，再提交 [Issue](https://github.com/Enigfrank/Hoshimi/issues)。
 
-完整教程的 Markdown 源文件位于 [docs](docs/README.md)
+完整教程的 Markdown 源文件位于 [docs](docs/README.md)  [QQ交流群](https://qm.qq.com/q/qXXTrw69Mc)
 
 ## 可选使用统计
 
