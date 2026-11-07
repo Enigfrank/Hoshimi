@@ -13,6 +13,7 @@
   - [连接朋友的服务器](remote.md)
   - [进阶设置](advanced.md)
 - **排查与反馈**
+  - [导出诊断包](diagnostics.md)
   - [常见问题](troubleshooting.md)
   - [问题上报指南](reporting.md)
 - **项目信息**

@@ -38,19 +38,25 @@ pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Disable
 
 ## 可选使用统计
 
-仅 Go 编译版提供此功能。首次开服会说明收集范围、接收平台并询问同意；输入 `y` 开启，回车、其他输入或没有输入均保持关闭。结果保存在 `config.json` 的 `telemetry_enabled` 字段，旧配置缺少该字段时会询问一次。无法保存选择时，本次不开启统计。
+仅 Go 编译版提供此功能。首次开服会说明收集范围、接收平台并询问同意；输入 `y` 开启，回车、其他输入或没有输入均保持关闭。结果保存在 `config.json` 的 `telemetry_enabled` 字段，本次授权范围保存在 `telemetry_consent`，当前值为 `umami-hwid-v1`。无法保存选择时，本次不开启统计。
+
+旧配置缺少选择时会询问一次。曾同意旧版 PostHog 统计但没有当前授权范围的配置会重新询问，不会自动上传设备标识；此前设置为 `false` 的配置继续保持关闭。
 
 | 字段 | 内容 |
 |---|---|
-| 服务端版本 | 构建时注入的版本；直接构建时为 `dev` |
-| 系统版本 | Windows NT 主次版本，不含系统构建号、设备型号或硬件信息 |
-| 运行时长 | 本次进程各报告区间的秒数 |
-| 错误计数 | 开服失败、游戏 TCP、战斗 UDP、HTTP、延迟推送、公告及玩法周期同步的固定类别计数 |
-| 临时标识 | 每次启动重新生成，仅关联本次运行的统计事件，不保存到磁盘 |
+| 设备标识 | SMBIOS Type 1 UUID 经项目命名空间和 SHA-256 派生的 HWID 哈希，作为 Umami `id`，不上传原始 UUID |
+| 启动会话 | `session_started_at`，本次进程统计开始的 UTC 时间，用于区分同一设备的多次开服 |
+| 环境 | `server_version`、`go_version`、`os`、`os_version`、`arch`、`cpu_threads`；系统版本含 Windows NT 主次版本和构建号 |
+| 启动 | `startup_ms`；成功事件表示业务初始化和全部监听已完成，失败事件含固定 `failure_stage` |
+| 运行时长 | `runtime_seconds`，相邻运行报告区间的秒数 |
+| 进程资源 | `heap_alloc_mb`（Go 堆分配）、`process_working_set_mb`（进程驻留内存，读取失败时省略）、`goroutines`；MB 按 1024 × 1024 字节换算 |
+| 错误计数 | 非零的 `error_serve_failed`、`error_game_tcp`、`error_battle_udp`、`error_http`、`error_delayed_push`、`error_activity_sync`，只含固定类别和次数 |
 
-不上传游戏账号、UID、密码、登录令牌、存档、聊天、照片、完整日志、本机路径或设备标识。不创建 PostHog 人物档案，并在事件中请求禁用 IP 定位、将 IP 属性固定为占位值；第三方接收服务在网络连接层仍可接触来源 IP。数据发送到 PostHog 美国区域（`us.i.posthog.com`）。
+这属于可跨启动关联的设备使用统计，不是完全匿名统计。不上传原始硬件编号、游戏账号、UID、密码、登录令牌、存档、聊天、照片、完整日志、本机路径、计算机名或用户名。数据发送到 Umami Cloud（`cloud.umami.is/api/send`），请求使用固定主机名 `hoshimi.local`、路径 `/server` 和占位 IP `0.0.0.0`，不包含本机网络地址；第三方接收服务在网络连接层仍可接触来源 IP。
 
-持久关闭：停止服务，将现有 `config.json` 中的 `telemetry_enabled` 改为 `false`，再重新启动；不要用一行示例覆盖整个配置。手动设为 `true` 表示同意并重新开启。
+设备 UUID 缺失、为全零或全 `FF`、读取失败时，本次不发送统计，不改用随机标识。更换主板、虚拟机克隆或固件提供重复 UUID 会影响设备识别；它不能作为授权或准确人数依据。
+
+持久关闭：停止服务，将现有 `config.json` 中的 `telemetry_enabled` 改为 `false`，再重新启动；不要用一行示例覆盖整个配置。需要重新开启时，将该字段改为 `true`；若 `telemetry_consent` 不是当前范围，启动时仍需明确同意。也可删除这两个字段，在下次启动时重新选择。
 
 仅本次关闭：
 
@@ -60,7 +66,13 @@ pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Disable
 
 有子命令时写为 `.\hoshimi.exe serve --no-telemetry`。该参数优先于保存的同意，不修改原选择；`--no-log` 只控制本机日志，与使用统计开关独立。`version`、`prepare` 和 `import-official` 不发送统计。
 
-每次开服尝试发送 `hoshimi_started`；运行中每 30 分钟发送 `hoshimi_heartbeat`；正常退出或开服返回错误时尝试发送 `hoshimi_stopped`。`runtime_seconds` 是相邻报告之间的增量，累计运行时长时对后两个事件求和，不能将它当成进程累计时长。启动事件代表开服尝试，不代表一定成功进入游戏；失败可结合 `error_counts.serve_failed` 查看。
+业务初始化和全部监听完成后发送 `hoshimi_started`，包括环境字段和启动耗时；启动失败时改为发送 `hoshimi_start_failed`，失败阶段限定为 `business_init`、`http_listen`、`game_tcp_listen`、`battle_udp_listen`、`https_certificate`、`https_listen`，不上传错误原文或路径。
+
+成功运行中每 6 小时发送 `hoshimi_heartbeat`；正常退出或服务返回错误时尝试发送 `hoshimi_stopped`。后两个事件仅包含启动会话、区间运行时长、进程资源和非零错误计数。环境不随心跳重复发送。`runtime_seconds` 是相邻报告之间的增量，累计运行时长时对心跳、停止及启动失败事件求和，不能当作进程累计时长；它包含启动准备所用时间。
+
+Umami 按 `id` 关联设备，按 `session_started_at` 关联本次进程。面板访客或会话总数不等于独立设备数，设备数应按 Distinct ID 去重。统计不收集玩家在线人数、玩家账号或功能操作详情。
+
+默认频率按 Umami Cloud Hobby 免费套餐设计。事件本身和每个自定义属性均消耗额度，设备规模或频繁重启仍可能耗尽套餐；固定 HWID 不会免除事件额度。此实现不使用查询 API 或后台管理密钥。
 
 上报在后台完成，单次请求最多两秒，正常停服时最多等待两秒。发送失败直接丢弃，不重试、不在磁盘缓存，不影响开服或游戏；强制结束进程可能丢失最后一个报告区间。因此这些数据是使用统计估计，不作为准确在线人数或独立安装人数。
 
