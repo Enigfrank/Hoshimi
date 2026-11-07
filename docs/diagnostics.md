@@ -25,7 +25,7 @@
 | `server-logs/` | 选定时段的服务端运行日志，包括轮转日志 |
 | `crashsight-logs/` | 配置的游戏目录下 `CrashSightLog` 文件夹中的相关日志 |
 
-CrashSight 日志目录从实际生效的游戏目录解析。例如，游戏目录为 `E:\AetherGazerLauncher\AetherGazer` 时，读取 `E:\AetherGazerLauncher\AetherGazer\CrashSightLog`。不会搜索整个磁盘，也不会修改游戏文件。
+CrashSight 日志目录从实际生效的游戏目录解析，读取 `<客户端目录>\CrashSightLog`，其中 `<客户端目录>` 为用户实际安装游戏的目录。不会搜索整个磁盘，也不会修改游戏文件。
 
 服务端日志默认来自 EXE 同级 `logs/`；使用 `--log-dir` 时收集实际日志目录。`--no-log` 不生成本次运行日志，已有历史日志仍可按时间选择。游戏日志目录不存在、为空或无法读取时会明确提示，其他资料仍可导出。
 

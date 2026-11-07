@@ -7,18 +7,20 @@
 ## 1. 准备客户端和服务端
 
 - 用官方启动器完成 Windows 64 位 PC 客户端的基础安装，不需要先进入官服。
-- 从 [GitHub Releases](https://github.com/Enigfrank/Hoshimi/releases) 下载 `Hoshimi-windows-amd64-v0.0.9.zip` 或更新版本，解压到不含中文的目录，例如 `E:\Hoshimi`。
+- 从 [GitHub Releases](https://github.com/Enigfrank/Hoshimi/releases) 下载 `Hoshimi-windows-amd64-v0.0.9.zip` 或更新版本，解压到你选择的不含中文的目录。
 - 安装 [PowerShell 7](https://github.com/PowerShell/PowerShell/releases)，后面的命令都在 PowerShell 7 中执行。
 - 保持联网，并为客户端资源和服务端缓存预留磁盘空间。首次准备不会下载所有模型、语音和视频，游玩时还会继续下载。
 
-下面使用的示例路径为：
+先确认你电脑上的两个实际目录：
 
-| 用途 | 示例路径 |
+| 本文占位符 | 实际填写内容 |
 |---|---|
-| Hoshimi 服务端目录，包含 `hoshimi.exe` | `E:\Hoshimi` |
-| 游戏客户端目录，包含 `AetherGazer.exe` | `E:\AetherGazerLauncher\AetherGazer` |
+| `<Hoshimi目录>` | 你实际解压 Hoshimi 的目录，里面包含 `hoshimi.exe` |
+| `<客户端目录>` | 你实际安装游戏的目录，里面包含 `AetherGazer.exe`；可在启动器中查看安装位置 |
 
-如果你的安装位置不同，请替换后续命令中的对应路径。基础客户端必须包含 `AetherGazer.exe` 和 `AetherGazer_Data\Plugins\x86_64\tolua.dll`；资源清单不能代替基础安装。客户端版本应与项目支持的资源版本匹配，参见[功能与限制](features.md)。
+后续路径和命令中的 `<Hoshimi目录>`、`<客户端目录>` 都是占位符。执行前，将引号中的占位符整体替换为你电脑上的实际路径，保留引号，不保留尖括号；实际路径不要包含中文。
+
+基础客户端必须包含 `AetherGazer.exe` 和 `AetherGazer_Data\Plugins\x86_64\tolua.dll`；资源清单不能代替基础安装。客户端版本应与项目支持的资源版本匹配，参见[功能与限制](features.md)。
 
 ## 2. 下载并放入资源清单
 
@@ -26,10 +28,10 @@
 
 1. 打开 [Hoshimi 的 GitHub 页面](https://github.com/Enigfrank/Hoshimi)，点击根目录的 [AssetHash_Info.bytes](https://github.com/Enigfrank/Hoshimi/blob/main/AssetHash_Info.bytes)。
 2. 在文件页面点击 **Download raw file（下载原始文件）**，保存为 `AssetHash_Info.bytes`。不要将 GitHub 网页另存为文件，也不要给文件增加 `.txt` 后缀。
-3. 打开客户端的以下目录：
+3. 找到你实际安装的客户端目录，从包含 `AetherGazer.exe` 的文件夹依次进入 `AetherGazer_Data` → `StreamingAssets` → `Windows`：
 
    ```text
-   E:\AetherGazerLauncher\AetherGazer\AetherGazer_Data\StreamingAssets\Windows
+   <客户端目录>\AetherGazer_Data\StreamingAssets\Windows
    ```
 
 4. 如果目录中已有同名文件，先将原文件复制到其他文件夹备份，再将下载的 `AssetHash_Info.bytes` 放入此目录，替换同名文件。
@@ -37,7 +39,7 @@
 完成后，文件的完整路径应为：
 
 ```text
-E:\AetherGazerLauncher\AetherGazer\AetherGazer_Data\StreamingAssets\Windows\AssetHash_Info.bytes
+<客户端目录>\AetherGazer_Data\StreamingAssets\Windows\AssetHash_Info.bytes
 ```
 
 这个文件列出资源名称、大小和散列，不包含全部游戏资源。放入清单后还必须执行下一步；不要手动修改清单版本来跳过版本检查，也不要将其用于不匹配的旧客户端。
@@ -47,8 +49,8 @@ E:\AetherGazerLauncher\AetherGazer\AetherGazer_Data\StreamingAssets\Windows\Asse
 保持游戏和启动器关闭，在 PowerShell 7 中执行：
 
 ```powershell
-Set-Location 'E:\Hoshimi'
-.\hoshimi.exe prepare --download-missing --client-dir 'E:\AetherGazerLauncher\AetherGazer'
+Set-Location '<Hoshimi目录>'
+.\hoshimi.exe prepare --download-missing --client-dir '<客户端目录>'
 ```
 
 `--client-dir` 填写包含 `AetherGazer.exe` 的游戏目录，不是 `StreamingAssets\Windows`，也不是 Hoshimi 目录。
@@ -64,7 +66,7 @@ Set-Location 'E:\Hoshimi'
 在服务端目录执行：
 
 ```powershell
-Set-Location 'E:\Hoshimi'
+Set-Location '<Hoshimi目录>'
 .\hoshimi.exe
 ```
 
@@ -73,8 +75,8 @@ Set-Location 'E:\Hoshimi'
 确认游戏仍未运行，另开一个 PowerShell 7 窗口执行：
 
 ```powershell
-Set-Location 'E:\Hoshimi'
-pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'E:\AetherGazerLauncher\AetherGazer'
+Set-Location '<Hoshimi目录>'
+pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir '<客户端目录>'
 ```
 
 首次切换会备份原始官服入口和 SDK 文件，无需登录官服。若提示修改 hosts 需要管理员权限，使用管理员身份打开 PowerShell 7 后重跑切换命令。看到“已切换：本地服”后再进入游戏。
