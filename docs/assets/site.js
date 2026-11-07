@@ -82,7 +82,7 @@ window.$docsify = {
   executeScript: false,
   search: {
     paths: [
-      '/', '/quickstart', '/startup', '/features', '/update', '/backup',
+      '/', '/quickstart', '/no-companion-account', '/startup', '/features', '/update', '/backup',
       '/switch-official', '/official-import', '/gm', '/remote', '/advanced',
       '/troubleshooting', '/reporting', '/about', '/deployment'
     ],

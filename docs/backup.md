@@ -10,6 +10,7 @@
 | `data/client-switch/` | 官私服切换备份及登录缓存 |
 | `runtime/` | 本机准备的客户端运行文件 |
 | `resource-cache/manifests/`、`resource-cache/backups/` | 联网准备取得的官方清单，以及替换前的客户端主清单备份；不属于账号进度 |
+| `resource-cache/files/` | 游戏运行期间按需取得的资源副本与续传片段；不属于账号进度，停服后可删除，后续可能重新下载 |
 | `config.json` | 客户端路径与服务设置 |
 | `logs/` | 服务端运行日志，每次启动在 `logs` 文件夹内新建一个 `2026-10-23T20-14-05.log`，可随时删除 |
 
@@ -17,4 +18,4 @@
 
 `data/`、`runtime/`、`resource-cache/`、`logs/` 和 `config.json` 不要上传 Git，也不要放进分发压缩包。
 
-补齐的资源和 `.hoshimi-part` 续传片段保存在客户端资源目录，未放入服务端 `data/`。恢复旧主清单前先退出游戏并停服，确认资源版本；替换清单后需要重新执行 `prepare`。
+准备阶段补齐的必要资源和对应 `.hoshimi-part` 续传片段保存在客户端资源目录；游戏运行期间按需取得的资源和续传片段保存在服务端 `resource-cache/files/`，均未放入服务端 `data/`。恢复旧主清单前先退出游戏并停服，确认资源版本；替换清单后需要重新执行 `prepare`。

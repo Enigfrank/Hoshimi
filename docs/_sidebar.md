@@ -1,6 +1,7 @@
 - **开始使用**
   - [文档首页](/)
   - [首次使用](quickstart.md)
+  - [无陪伴服账号游玩教程](no-companion-account.md)
   - [以后怎么启动](startup.md)
   - [功能与限制](features.md)
 - **日常维护**

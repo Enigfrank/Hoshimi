@@ -7,6 +7,7 @@ Hoshimi（星见）非官方游戏模拟服务端，适合本地体验和熟人�
 | 你想做什么 | 点这里 |
 |---|---|
 | 第一次玩 | [首次使用](quickstart.md) |
+| 没有陪伴服账号，无法下载游戏内资源 | [无陪伴服账号游玩教程](no-companion-account.md) |
 | 再次开服 | [以后怎么启动](startup.md) |
 | 更新服务端 | [更新指南](update.md) |
 | 回官服 | [切回官服](switch-official.md) |
