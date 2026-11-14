@@ -4,7 +4,7 @@
 
 ```powershell
 Set-Location 'E:\Hoshimi'
-pwsh -File .\scripts\switch-client.ps1 -Mode Official -ClientDir 'D:\Games\AetherGazer'
+.\scripts\switch-client.ps1 -Mode Official -ClientDir 'D:\Games\AetherGazer'
 ```
 
 看到“已切换：官服”后，用**官方启动器**打开游戏。

@@ -9,7 +9,7 @@
 - 用官方启动器完成 Windows 64 位 PC 客户端的基础安装，不需要先进入官服。
 - 从 [GitHub Releases](https://github.com/Enigfrank/Hoshimi/releases) 下载 `Hoshimi-windows-amd64-v0.0.9.zip` 或更新版本，解压到你选择的不含中文的目录。
 - 安装 [PowerShell 7](https://github.com/PowerShell/PowerShell/releases)，后面的命令都在 PowerShell 7 中执行。
-- 保持联网，并为客户端资源和服务端缓存预留磁盘空间。首次准备不会下载所有模型、语音和视频，游玩时还会继续下载。
+- 保持联网，并为客户端资源和服务端缓存预留磁盘空间。默认只准备必要资源，游玩时继续下载；使用支持 `--all` 的构建可提前下载当前主清单及全部语言语音，通常需要数十 GB 空间。
 
 先确认你电脑上的两个实际目录：
 
@@ -57,6 +57,16 @@ Set-Location '<Hoshimi目录>'
 
 该命令读取你放入的清单，查询官方公开资源版本，下载并校验必要脚本、寻址表、音频配置、棋盘资源及语音散列清单，再提取本机运行文件。它不会读取官服账号的登录缓存，也不需要先取得陪伴服权限。
 
+如需提前下载全部资源，将上面的准备命令替换为：
+
+```powershell
+.\hoshimi.exe prepare --download-missing --all --client-dir '<客户端目录>'
+```
+
+`--all` 必须与 `--download-missing` 一起使用；不带 `--all` 时仍只下载原来的必要资源。加上后会遍历当前主清单和全部语言语音清单，下载清单中的剧情、活动、角色、场景、音乐、视频和各类语音，并逐个核对大小与 MD5。主资源保存到客户端 `StreamingAssets\Windows`，各语言语音保存到 `StreamingAssets\Voice\<语言>`；命令输出总文件数、总字节数、待补齐数量和校验进度。退出后重跑同一命令即可复用完整文件并续传，服务端已有完整缓存也会复用。
+
+“全部”指当前官方清单列出的资源，不能补回清单未列出、CDN 已下架的历史文件，也不会因此开放服务端尚未实现的活动玩法。全量模式仅在全部资源校验成功后进入运行文件准备；任一文件下载失败都会报告错误。
+
 **完成标志：** 控制台出现“准备完成”，服务端目录生成 `runtime` 文件夹和 `config.json`。如果下载中断，可重新执行同一命令；已完成的资源会校验复用，可续传的片段会继续下载。出现错误时先处理错误，不要跳过准备直接开服。
 
 已有配置时，确认 `config.json` 中的 `resource_mode` 为默认值 `"proxy"`，以使用服务端下载、校验和缓存流程。配置项说明见[进阶设置](advanced.md#无需官服登录补齐资源)。
@@ -76,7 +86,7 @@ Set-Location '<Hoshimi目录>'
 
 ```powershell
 Set-Location '<Hoshimi目录>'
-pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir '<客户端目录>'
+.\scripts\switch-client.ps1 -Mode Local -ClientDir '<客户端目录>'
 ```
 
 首次切换会备份原始官服入口和 SDK 文件，无需登录官服。若提示修改 hosts 需要管理员权限，使用管理员身份打开 PowerShell 7 后重跑切换命令。看到“已切换：本地服”后再进入游戏。
@@ -92,6 +102,8 @@ pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir '<客户端目录>
 这里使用的是私服账号，无需官服账号或陪伴服权限。登录方式与新号说明见[首次使用](quickstart.md)。
 
 游戏请求尚未准备好的场景、角色模型、音视频等资源时，Hoshimi 会从官方 HTTPS CDN 按需下载，完整接收并通过大小和 MD5 校验后，再提供给游戏。首次加载大文件可能需要等待，查看服务端窗口中的 `[资源接收]`、`[资源下载] 已校验` 等提示即可了解进度；不要在下载期间关闭服务端。
+
+如果已执行全量下载，同一清单中的完整资源会直接复用。游戏更新后需要重新准备并下载新清单中的资源。
 
 运行期间取得的资源副本保存在服务端 `resource-cache/files/`，与游戏写入的客户端资源文件分开，避免文件占用冲突。再次请求会复用已校验缓存，旧版留下的完整 `.hoshimi-part` 也可只读复制并校验复用。缓存和续传说明见[进阶设置](advanced.md#无需官服登录补齐资源)。
 

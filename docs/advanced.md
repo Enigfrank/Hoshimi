@@ -14,20 +14,30 @@
 
 准备阶段只补齐脚本、寻址表、Unity 清单、音频配置、服务端读取的棋盘资源及各语言语音散列清单。其余模型、音乐、语音和视频在默认 `resource_mode: "proxy"` 下按客户端请求下载。完整文件通过大小和 MD5 校验后才提供响应，因此首次请求大文件可能需要等待；已校验文件直接复用。`direct` 模式由客户端直连官方 CDN，不使用服务端的下载校验与缓存流程。
 
+需要提前下载全部资源时，使用支持 `--all` 的构建，将准备命令改为：
+
+```powershell
+.\hoshimi.exe prepare --download-missing --all --client-dir 'D:\Games\AetherGazer'
+```
+
+全量模式遍历当前官方主清单和所有语言语音清单，不按资源名称筛选，覆盖清单中的剧情、活动、角色、场景、音乐、视频及各类语音。下载前核对本机文件，显示总量、已校验数量和待补齐数量，以最多四个任务并发补齐并报告总进度。主资源写入客户端 `StreamingAssets/Windows/`，语音写入 `StreamingAssets/Voice/<语言>/`，均采用内容散列目录；客户端扁平目录中的完整文件及服务端完整缓存也会复用。全量准备完成仍以“准备完成”为准；任一资源失败时停止并保留可续传片段，不安装新的主清单。
+
+全量资源通常占用数十 GB，具体以本次命令的资源计划为准。`--all` 必须配合 `--download-missing` 使用；仅执行 `prepare --download-missing` 时仍只补齐原来的必要资源。全量模式只覆盖当前清单及仍可从 CDN 获取的资源，不恢复已下架历史文件，也不改变活动玩法的服务端支持范围。
+
 准备阶段的必要资源保存在客户端 `AetherGazer_Data/StreamingAssets/Windows/` 的散列目录。游戏运行期间的按需资源保存在服务端 `resource-cache/files/` 的散列目录，响应始终读取独立缓存，避免与游戏写入客户端资源时争用同一文件。已有客户端完整资源或旧版留下的完整 `.hoshimi-part` 会只读复制到缓存，重新校验后复用，无需重复下载；未完成的旧版客户端片段保留原位，不迁移。
 
 中断内容使用 `.hoshimi-part` 后缀，重试时核对续传范围；大小或 MD5 不符的内容不会启用。按 `Ctrl+C` 后，可重新执行同一命令继续。服务端缓存不属于账号进度，停服后可以删除；删除后可能需要重新下载。
 
-原始官方主清单与语音包总清单保存在服务端 `resource-cache/manifests/`。需要替换客户端主清单时，旧文件先备份到 `resource-cache/backups/assethash_<旧文件MD5>.bytes`。同一资源版本下，已有且校验完整的本机 `scripts64` 补丁会保留，不会将补丁散列当作官方资源下载。
+原始官方主清单与语音包总清单保存在服务端 `resource-cache/manifests/`。需要替换客户端主清单时，旧文件先备份到 `resource-cache/backups/assethash_<旧文件MD5>.bytes`。同一资源版本下，已有且校验完整的本机 `scripts64` 补丁会保留，不会将补丁散列当作官方资源下载；全量模式同时补齐官方原始脚本资源。
 
-此功能依赖官方公开接口和 CDN 仍提供对应文件；不授予官服登录权限。缺少基础安装文件、版本不匹配或官方资源不可用时，按提示修复后重试。离线准备仍使用不带 `--download-missing` 的原命令。
+此功能依赖官方公开接口和 CDN 仍提供对应文件；不授予官服登录权限。缺少基础安装文件、版本不匹配或官方资源不可用时，按提示修复后重试。离线准备仍使用不带下载选项的原命令。
 
 ## 誓约照片（仅同机）
 
 客户端照片 SDK 固定使用 HTTPS。需要保存婚纱照时，在新版服务端目录手动执行：
 
 ```powershell
-pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Enable
+.\scripts\enable-photo-upload.ps1 -Mode Enable
 ```
 
 脚本生成仅用于 `127.0.0.1` 的证书，将其信任到当前 Windows 用户的根证书库，并备份原配置、启用 `enable_https`。不会启动或重启服务。请自行启动新版服务、重新登录后测试拍照。游戏与服务端须在同一台电脑、同一 Windows 用户下运行；远程玩家不适用此配置。
@@ -37,7 +47,7 @@ pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Enable
 照片保存在 `data/photos`，应与账号存档一起备份。证书有效期一年；过期后先恢复再重新启用。恢复命令如下，仅在配置和证书未被后续修改时逐字节还原，并删除该脚本添加的证书信任：
 
 ```powershell
-pwsh -File .\scripts\enable-photo-upload.ps1 -Mode Disable
+.\scripts\enable-photo-upload.ps1 -Mode Disable
 ```
 
 ## 可选使用统计

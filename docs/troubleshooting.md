@@ -43,7 +43,7 @@
 如果切换脚本提示 SDK 备份版本不匹配，先用官方启动器修复，再指定新的备份目录：
 
 ```powershell
-pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGazer' -StateDir 'D:\HoshimiBackups\v2'
+.\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGazer' -StateDir 'D:\HoshimiBackups\v2'
 ```
 
 以后切回官服也要使用同一个 `-StateDir`。
@@ -53,7 +53,7 @@ pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGa
 先退出游戏，再执行：
 
 ```powershell
-pwsh -File .\scripts\repair-battle-controls.ps1
+.\scripts\repair-battle-controls.ps1
 ```
 
 脚本会备份设置并显示位置。恢复时使用 `-Restore '备份文件完整路径'`。

@@ -18,4 +18,4 @@
 
 `data/`、`runtime/`、`resource-cache/`、`logs/` 和 `config.json` 不要上传 Git，也不要放进分发压缩包。
 
-准备阶段补齐的必要资源和对应 `.hoshimi-part` 续传片段保存在客户端资源目录；游戏运行期间按需取得的资源和续传片段保存在服务端 `resource-cache/files/`，均未放入服务端 `data/`。恢复旧主清单前先退出游戏并停服，确认资源版本；替换清单后需要重新执行 `prepare`。
+准备阶段补齐的资源和对应 `.hoshimi-part` 续传片段保存在客户端资源目录；`prepare --download-missing --all` 下载的主资源位于 `StreamingAssets/Windows/`，全部语言语音位于 `StreamingAssets/Voice/<语言>/`。游戏运行期间按需取得的资源和续传片段保存在服务端 `resource-cache/files/`，均未放入服务端 `data/`。恢复旧主清单前先退出游戏并停服，确认资源版本；替换清单后需要重新执行 `prepare`。

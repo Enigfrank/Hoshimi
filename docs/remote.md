@@ -9,7 +9,7 @@
 退出游戏，并停止自己电脑上的服务端，然后执行：
 
 ```powershell
-pwsh -File .\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGazer'
+.\scripts\switch-client.ps1 -Mode Local -ClientDir 'D:\Games\AetherGazer'
 ```
 
 ## 2. 开启连接
