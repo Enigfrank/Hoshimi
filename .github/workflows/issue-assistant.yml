@@ -1,0 +1,62 @@
+name: Issue Assistant
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: '仅预览：填写 Issue 编号，不发布回复或修改标签'
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: issue-assistant-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  assist:
+    if: >-
+      github.event.sender.type != 'Bot' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'issues' && !github.event.issue.pull_request) ||
+        (
+          github.event_name == 'issue_comment' &&
+          !github.event.issue.pull_request &&
+          startsWith(github.event.comment.body, '/issue-bot') &&
+          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout trusted repository files
+        id: checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Analyze issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          PR_AGENT_API_BASE: ${{ vars.PR_AGENT_API_BASE }}
+          PR_AGENT_MODEL: ${{ vars.PR_AGENT_MODEL }}
+          ISSUE_BOT_DOCS_REF: ${{ steps.checkout.outputs.commit }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -B .github/issue-bot/main.py
