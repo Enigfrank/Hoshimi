@@ -9,6 +9,6 @@ Set-Location 'E:\Hoshimi'
 
 看到“已切换：官服”后，用**官方启动器**打开游戏。
 
-**保留 `data/client-switch/`。** 这里保存切换备份和两套登录缓存。
+**保留 `data/client-switch/`。** 这里保存切换备份和两套登录缓存。切到本地服时指定了 `-StateDir` 的，切回官服和查询状态时也要传入同一个目录。
 
 忘了当前连哪边？把命令中的 `Official` 改成 `Status`。

@@ -64,7 +64,7 @@ window.$docsify = {
   name: 'Hoshimi 文档',
   nameLink: '#/',
   // 修改文档内容时同步更新，格式为 YYYY-MM-DD。
-  docsUpdatedAt: '2026-11-14',
+  docsUpdatedAt: '2026-11-21',
   homepage: 'README.md',
   loadSidebar: true,
   loadNavbar: true,
@@ -84,13 +84,13 @@ window.$docsify = {
     paths: [
       '/', '/quickstart', '/no-companion-account', '/startup', '/features', '/update', '/backup',
       '/switch-official', '/official-import', '/gm', '/remote', '/advanced',
-      '/troubleshooting', '/reporting', '/about', '/deployment'
+      '/diagnostics', '/troubleshooting', '/reporting', '/about'
     ],
     placeholder: '搜索文档',
     noData: '没有找到相关内容',
     depth: 3,
     maxAge: 86400000,
-    namespace: 'hoshimi-docs-v1'
+    namespace: 'hoshimi-docs-v2'
   },
   plugins: [installCodeCopy, installDocsUpdatedAt]
 };

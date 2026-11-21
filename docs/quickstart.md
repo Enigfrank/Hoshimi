@@ -6,7 +6,7 @@
 
 在本项目的 GitHub 页面：
 
-1. 打开本项目的 **GitHub Releases**，下载所需版本的 <strong><code>Hoshimi-windows-amd64-v[版本号].zip</code></strong>，例如 `Hoshimi-windows-amd64-v0.0.1.zip`。
+1. 在 [GitHub Releases](https://github.com/Enigfrank/Hoshimi/releases) 选择支持当前客户端的版本，下载 `Hoshimi-windows-amd64-v[版本号].zip`。
 2. 解压到你选择的文件夹，例如 `E:\Hoshimi`。
 
 **成功标志：** 解压后的文件夹中有 `hoshimi.exe` 和 `scripts` 文件夹。
@@ -47,9 +47,9 @@ Set-Location 'E:\Hoshimi'
 
 保持联网，等待完成。此命令查询官方公开资源清单，下载必要脚本、寻址表和语音清单，并核对资源大小与 MD5；不会首次下载全部模型和音视频。不读取官服登录缓存，也无需官服账号。中断后可重新执行同一命令续传。
 
-需要提前下载当前清单中的全部剧情、活动、模型、音视频及所有语言语音时，在上述准备命令中追加 `--all`，即 `prepare --download-missing --all --client-dir 'D:\Games\AetherGazer'`；不带 `--all` 时仍只下载原来的必要资源。此选项需要支持它的构建，通常涉及数十 GB 资源；会显示总量及校验进度，复用已完整下载的客户端文件和服务端缓存。覆盖范围以当前官方清单为准，详见[无陪伴服账号游玩教程](no-companion-account.md#3-无需官服登录补齐资源)。
+Hoshimi **0.0.10 或更新版本**可在上述准备命令中追加 `--all`，预下载当前主清单及全部语言语音清单中的资源。全量下载通常涉及数十 GB，会显示总量和校验进度，并复用完整的客户端文件和服务端缓存。详见[无需官服登录补齐资源](no-companion-account.md#_3-无需官服登录补齐资源)。
 
-基础安装必须包含 `AetherGazer.exe`、`AetherGazer_Data/Plugins/x86_64/tolua.dll` 和 `AetherGazer_Data/StreamingAssets/Windows/AssetHash_Info.bytes`。缺少这些文件时先用启动器修复。资源应用版本与官方清单不匹配时会停止，不自动混用版本。
+基础安装必须包含 `AetherGazer.exe` 和 `AetherGazer_Data/Plugins/x86_64/tolua.dll`，缺少时先用启动器修复。准备还需要 `AetherGazer_Data/StreamingAssets/Windows/AssetHash_Info.bytes`，缺少时按[资源清单下载步骤](no-companion-account.md#_2-下载并放入资源清单)放入与客户端匹配的清单。
 
 已有完整资源、只需离线重新准备时，可去掉 `--download-missing`，继续使用原来的 `prepare --client-dir 'D:\Games\AetherGazer'`。
 

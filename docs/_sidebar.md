@@ -19,4 +19,3 @@
   - [问题上报指南](reporting.md)
 - **项目信息**
   - [发布内容与许可](about.md)
-  - [文档部署与维护](deployment.md)

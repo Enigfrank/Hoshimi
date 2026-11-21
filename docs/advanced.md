@@ -14,7 +14,7 @@
 
 准备阶段只补齐脚本、寻址表、Unity 清单、音频配置、服务端读取的棋盘资源及各语言语音散列清单。其余模型、音乐、语音和视频在默认 `resource_mode: "proxy"` 下按客户端请求下载。完整文件通过大小和 MD5 校验后才提供响应，因此首次请求大文件可能需要等待；已校验文件直接复用。`direct` 模式由客户端直连官方 CDN，不使用服务端的下载校验与缓存流程。
 
-需要提前下载全部资源时，使用支持 `--all` 的构建，将准备命令改为：
+Hoshimi **0.0.10 或更新版本**支持提前下载全部清单资源：
 
 ```powershell
 .\hoshimi.exe prepare --download-missing --all --client-dir 'D:\Games\AetherGazer'
@@ -92,12 +92,12 @@ Umami 按 `id` 关联设备，按 `session_started_at` 关联本次进程。面�
 
 ## 修改端口或文件位置
 
-准备成功后，编辑 EXE 旁边的 `config.json`。格式参考同一文件夹中的 `config.example.json`。修改后重启服务端。
+准备成功后，编辑实际使用的 `config.json`，格式参考发布包里的 `config.example.json`。配置默认位于 EXE 旁，指定 `--home` 时位于该参数指定的目录。修改后重启服务端。
 
 | 字段 | 默认值 / 用途 |
 |---|---|
 | `client_dir` | 本机游戏文件夹，由准备命令保存 |
-| `runtime_dir` | `runtime`，相对路径以 EXE 所在目录为起点 |
+| `runtime_dir` | `runtime`，相对路径以实际配置目录为起点 |
 | `host` | `0.0.0.0` |
 | `http_port` | `8080` |
 | `game_port` | `5001`，TCP 与 UDP 共用端口号 |
@@ -107,7 +107,7 @@ Umami 按 `id` 关联设备，按 `session_started_at` 关联本次进程。面�
 
 兼容 `AGL_CLIENT_DIR`、`AGL_HOST`、`AGL_HTTP_PORT`、`AGL_TCP_PORT`、`AGL_ENABLE_HTTPS`、`AGL_RESOURCE_MODE`、`AGL_RESOURCE_DOWNLOAD_URL` 和 `HOSHIMI_RUNTIME_DIR` 环境变量，**环境变量优先于 JSON**。
 
-改 HTTP 端口后，切换脚本加 `-LocalPort 新端口`，GM 和玩家转发也要改。游戏端口变化时，TCP/UDP 放行与玩家转发一并修改。
+改 HTTP 端口后，更新 GM 地址和切换脚本的 `-LocalPort`。游戏端口变化时，更新 TCP/UDP 放行规则。远程连接的转发设置见[连接朋友的服务器](remote.md)。
 
 `--home '其他文件夹'` 可指定配置与存档目录；`--runtime-dir '完整路径'` 可临时指定运行文件位置。默认无需这些参数。
 
